@@ -1,4 +1,4 @@
-from typing import List, Iterable, TypeVar, Any, Callable, Optional, TypeAlias, Iterator
+from typing import List, Iterable, TypeVar, Any, Callable, Optional, TypeAlias, Iterator, overload
 from functools import reduce
 from itertools import accumulate
 from inspect import signature, getfullargspec
@@ -124,3 +124,73 @@ class LightChain(tuple):
             if initial == None
             else LightChain(accumulate(self, handler, initial = initial))[1:]
         )
+
+    def append(self, __object:Any) -> 'LightChain':
+        """
+        LightChain[*origin_elements, new_element]
+        """
+        return LightChain(self + (__object,))
+
+    def insert(self, __index:int, __object:Any) -> 'LightChain':
+        """
+        LightChain[origin_elements[:__index], new_element, origin_elements[__index:]]
+        """
+        return LightChain(self[:__index] + (__object,) + self[__index:])
+
+    def pop(self, __index:int=None) -> 'LightChain':
+        """
+        LightChain[LightChain_without_index_element, index_elment]
+        """
+        _list = list(self)
+        popped = _list.pop(__index) if __index != None else _list.pop()
+        return LightChain((LightChain(_list), popped))
+
+    def replace(self, __1:int, __2:Any, __3:Any=..., __4:Any=...) -> 'LightChain':
+        """
+        LightChain[index] = new_element
+
+        LightChain[start:end] = new_element OR new_elements 
+
+        LightChain[start:end:step] = new_elements 
+        """
+        _list = list(self)
+        if __3 == ...:
+            _list[__1] = __2
+            return LightChain(_list)
+        if __4 == ...:
+            _list[__1:__2] = __3
+            return LightChain(_list)
+        _list[__1:__2:__3] = __4
+        return LightChain(_list)
+
+    def remove(self, __1:int, __2:Any=..., __3:Any=...) -> 'LightChain':
+        """
+        LightChain[index_removed]
+
+        LightChain[strat_to_end_removed]
+
+        LightChain[strat_to_end_by_step_removed]
+        """
+        if __2 == ...:
+            return self.replace(__1, [])
+        if __3 == ...:
+            return self.replace(__1, __2, [])
+        return self.replace(__1, __2, __3, [])
+    
+    def copy(self) -> 'LightChain':
+        """
+        LightChain[origin]
+        """
+        return LightChain(self)
+
+    def extend(self, other:Iterable) -> 'LightChain':
+        """
+        LightChain[*origin_elements, *new_elements]
+        """
+        return self + LightChain(other)
+
+    def reverse(self) -> 'LightChain':
+        """
+        LightChain[::-1]
+        """
+        return LightChain(self[::-1])
