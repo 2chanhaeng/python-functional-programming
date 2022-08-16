@@ -1,5 +1,6 @@
 from typing import List, Iterable, TypeVar, Any, Callable, Optional, TypeAlias, Iterator
 from functools import reduce
+from itertools import accumulate
 from inspect import signature, getfullargspec
 
 __all__ = ["Chain", "LightChain"]
@@ -61,7 +62,7 @@ class Chain(tuple):
             case length:
                 return Chain(x for i, x in enumerate(self, start) if handler(x, i, self, *([None] * (length - 3))))
 
-    def reduce(self, handler:ReduceHandler, initializer:T|None=None, start:int=0) -> T:
+    def reduce(self, handler:ReduceHandler, initial:T|None=None, start:int=0) -> T:
         """
         handler(one) => handler(previous)
 
@@ -75,14 +76,14 @@ class Chain(tuple):
         """
         iterator = iter(self)
         is_init = 0
-        if initializer == None:
-            initializer = next(iterator)
+        if initial == None:
+            initial = next(iterator)
             is_init = 1
         match len(getfullargspec(handler).args):
             case 1:
-                return reduce(lambda initializer, _: handler(initializer), iterator, initializer)
+                return reduce(lambda initial, _: handler(initial), iterator, initial)
             case 2:
-                return reduce(handler, iterator, initializer)
+                return reduce(handler, iterator, initial)
             case 3:
                 return reduce(lambda init, x: handler(init, x[1], x[0]), enumerate(iterator, start + is_init))
             case 4:
@@ -107,9 +108,9 @@ class LightChain(tuple):
         """
         return LightChain(filter(handler, self))
 
-    def reduce(self, handler:ReduceHandler, initializer:Any|None=None) -> T:
+    def reduce(self, handler:ReduceHandler, initial:Any|None=None) -> T:
         """
-        functools.reduce(handler, LightChain, initializer = LightChain.pop(0))
+        functools.reduce(handler, LightChain, initial = LightChain.pop(0))
         """
-        it = iter(self)
-        return reduce(handler, it, initializer if initializer != None else next(it))
+        iterator = iter(self)
+        return reduce(handler, iterator, initial if initial != None else next(iterator))
