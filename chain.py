@@ -89,3 +89,27 @@ class Chain(tuple):
                 return reduce(lambda init, x: handler(init, x[1], x[0], self), enumerate(iterator, start + is_init))
             case length:
                 return reduce(lambda init, x: handler(init, x[1], x[0], self, *([None] * (length - 3))), enumerate(self, start + is_init))
+
+
+class LightChain(tuple):
+    def __init__(self, iterable:Iterable|None) -> None:
+        tuple.__init__(iterable)
+
+    def map(self, handler:MapHandler) -> 'LightChain[Any]':
+        """
+        LightChain[hander(element)]
+        """
+        return LightChain(map(handler, self))
+
+    def filter(self, handler:FilterHandler) -> 'LightChain[Any]':
+        """
+        LightChain[element if hander(element)]
+        """
+        return LightChain(filter(handler, self))
+
+    def reduce(self, handler:ReduceHandler, initializer:T|None=None) -> Any:
+        """
+        reduce(hander, LightChain, initializer = LightChain.pop(0))
+        """
+        it = iter(self)
+        return reduce(handler, it, initializer if initializer != None else next(it))
