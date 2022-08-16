@@ -117,6 +117,10 @@ class LightChain(tuple):
 
     def accumulate(self, handler:ReduceHandler, initial:Any|None=None) -> T:
         """
-        LightChain[handler(first)]
+        LightChain[itertools.accumulate(LightChain, handler)]
         """
-        return LightChain(accumulate(self, handler, initial = initial))
+        return (
+            LightChain(accumulate(self, handler))
+            if initial == None
+            else LightChain(accumulate(self, handler, initial = initial))[1:]
+        )
