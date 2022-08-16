@@ -2,7 +2,7 @@ from typing import List, Iterable, TypeVar, Any, Callable, Optional, TypeAlias, 
 from functools import reduce
 from inspect import signature, getfullargspec
 
-__all__ = ["Chain"]
+__all__ = ["Chain", "LightChain"]
 
 T, S = TypeVar('T'), TypeVar('S')
 MapHandler = Callable[[Any], T]|Callable[[Any, int], T]|Callable[[Any, int, Iterable], T]
