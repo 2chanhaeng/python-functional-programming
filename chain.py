@@ -97,19 +97,19 @@ class LightChain(tuple):
 
     def map(self, handler:MapHandler) -> 'LightChain[Any]':
         """
-        LightChain[hander(element)]
+        LightChain[handler(element)]
         """
         return LightChain(map(handler, self))
 
     def filter(self, handler:FilterHandler) -> 'LightChain[Any]':
         """
-        LightChain[element if hander(element)]
+        LightChain[element if handler(element)]
         """
         return LightChain(filter(handler, self))
 
-    def reduce(self, handler:ReduceHandler, initializer:T|None=None) -> Any:
+    def reduce(self, handler:ReduceHandler, initializer:Any|None=None) -> T:
         """
-        reduce(hander, LightChain, initializer = LightChain.pop(0))
+        functools.reduce(handler, LightChain, initializer = LightChain.pop(0))
         """
         it = iter(self)
         return reduce(handler, it, initializer if initializer != None else next(it))
