@@ -199,3 +199,9 @@ class LightChain(tuple):
         LightChain[::-1]
         """
         return LightChain(self[::-1])
+
+    def find(self, __object:Any) -> int:
+        new, popped = self.pop()
+        if popped == __object:
+            return len(self) - 1
+        return new.find(__object) if len(new) > 0 else -1
