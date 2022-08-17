@@ -142,7 +142,7 @@ class LightChain(tuple):
         """
         return LightChain(self[:__index] + (__object,) + self[__index:])
 
-    def pop(self, __index:int=None) -> 'LightChain':
+    def pop(self, __index:int=None) -> 'LightChain["LightChain"[T],T]':
         """
         LightChain[LightChain_without_index_element, index_elment]
         """
@@ -200,8 +200,17 @@ class LightChain(tuple):
         """
         return LightChain(self[::-1])
 
+    @staticmethod
+    def __search(iterator:Iterator, __handler:Callable[[Any], bool], __index:int=0) -> int:
+        popped = next(iterator, ...)
+        if popped == ...:
+            return -1
+        if __handler(popped):
+            return __index
+        return LightChain.__search(iterator, __handler, __index + 1)
+
     def find(self, __object:Any) -> int:
-        new, popped = self.pop()
-        if popped == __object:
-            return len(self) - 1
-        return new.find(__object) if len(new) > 0 else -1
+        return LightChain.__search(iter(self), lambda x: x == __object)
+
+    def search(self, __handler:Callable[[Any], bool]) -> int:
+        return LightChain.__search(iter(self), __handler)
