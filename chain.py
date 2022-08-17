@@ -102,11 +102,16 @@ class LightChain(tuple):
         """
         return LightChain(map(handler, self))
 
-    def filter(self, handler:FilterHandler) -> 'LightChain[Any]':
+    def filter(self, handler:FilterHandler, filter_true:bool=True) -> 'LightChain[Any]':
         """
         LightChain[element if handler(element)]
+
+        LightChain[element if not handler(element)]
         """
-        return LightChain(filter(handler, self))
+        if filter_true:
+            return LightChain(filter(handler, self))
+        not_handler = lambda x: not handler(x)
+        return LightChain(filter(not_handler, self))
 
     def reduce(self, handler:ReduceHandler, initial:Any|None=None) -> T:
         """
