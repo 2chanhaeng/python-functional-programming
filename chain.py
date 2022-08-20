@@ -11,7 +11,7 @@ FilterHandler = Callable[[Any], bool]|Callable[[Any, int], bool]|Callable[[Any, 
 ReduceHandler = Callable[[Any, Any], T]|Callable[[Any, Any, int], T]|Callable[[Any, Any, int, Iterable], T]
 
 class Chain(tuple):
-    def __init__(self, iterable:Iterable|None) -> None:
+    def __init__(self, iterable:Iterable=tuple()) -> None:
         tuple.__init__(iterable)
 
     def map(self, handler:MapHandler, start:bool=0) -> 'Chain[Any]':
@@ -93,7 +93,7 @@ class Chain(tuple):
 
 
 class LightChain(tuple):
-    def __init__(self, iterable:Iterable|None) -> None:
+    def __init__(self, iterable:Iterable=tuple()) -> None:
         tuple.__init__(iterable)
 
     def map(self, handler:MapHandler) -> 'LightChain[Any]':
