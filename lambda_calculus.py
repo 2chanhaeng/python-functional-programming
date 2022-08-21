@@ -12,3 +12,8 @@ def succ(n:Callable, f:Callable[[T], T], x:T) -> T:
 @curry
 def plus(m:Callable, n:Callable, f:Callable[[T], T], x:T) -> T:
     return m(f)(n(f)(x)) # m(succ)(n)
+
+
+@curry
+def mult(m:Callable, n:Callable, f:Callable[[T], T]) -> T:
+    return m(n(f))
