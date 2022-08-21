@@ -7,3 +7,8 @@ T = TypeVar('T')
 @curry
 def succ(n:Callable, f:Callable[[T], T], x:T) -> T:
     return f(n(f)(x))
+
+
+@curry
+def plus(m:Callable, n:Callable, f:Callable[[T], T], x:T) -> T:
+    return m(f)(n(f)(x)) # m(succ)(n)
