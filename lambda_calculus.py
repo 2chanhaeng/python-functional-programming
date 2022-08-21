@@ -22,3 +22,8 @@ def mult(m:Callable, n:Callable, f:Callable[[T], T]) -> T:
 @curry
 def exp(m:Callable, n:Callable):
     return n(m)
+
+
+@curry
+def pred(n:Callable, f:Callable, x:T):
+    return n(lambda g: lambda h: h(g(f)))(lambda u: x)(lambda u: u)
