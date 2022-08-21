@@ -27,3 +27,8 @@ def exp(m:Callable, n:Callable):
 @curry
 def pred(n:Callable, f:Callable, x:T):
     return n(lambda g: lambda h: h(g(f)))(lambda u: x)(lambda u: u)
+
+
+@curry
+def minus(m:Callable, n:Callable):
+    return n(pred)(m)
