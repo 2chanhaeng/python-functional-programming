@@ -17,3 +17,8 @@ def plus(m:Callable, n:Callable, f:Callable[[T], T], x:T) -> T:
 @curry
 def mult(m:Callable, n:Callable, f:Callable[[T], T]) -> T:
     return m(n(f))
+
+
+@curry
+def exp(m:Callable, n:Callable):
+    return n(m)
