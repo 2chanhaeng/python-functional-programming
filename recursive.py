@@ -1,15 +1,18 @@
-from curry import curry
-from typing import Callable, Any
+from typing import Callable, TypeVar
 
 __all__ = ["recursive"]
 
-@curry
-def recursive(recursion:int, f:Callable):
+T = TypeVar('T')
+F = Callable[[T],T]
+
+def recursive(recursion:int) -> Callable[[F,int], F]:
     """
     recursive(3, f)(x) = f( f( f(x) ) )
     """
-    def operator(*args:Any, **kwargs:Any):
-        if recursion > 1:
-            return f(recursive(recursion - 1, f)(*args, **kwargs))
-        return f(*args, **kwargs)
-    return operator
+    def recursor_decorator(f:F, *, __recursion:int=recursion) -> F:
+        def recursor(arg:T) -> T:
+            if __recursion > 1:
+                return f(recursor_decorator(f, __recursion = __recursion - 1)(arg))
+            return f(arg)
+        return recursor
+    return recursor_decorator
