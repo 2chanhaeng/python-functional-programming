@@ -1,7 +1,8 @@
+from inspect import signature
 from recursive import recursive
 from typing import Callable, TypeVar, ParamSpec
 
-__all__ = ["succ", "plus", "mult", "exp", "pred", "minus", "true", "false", "pair", "first", "second"]
+__all__ = ["succ", "plus", "mult", "exp", "pred", "minus", "true", "false", "pair", "first", "second", "identify", "value", "extract"]
 
 T, _S = TypeVar('T'), TypeVar('S')
 P, Q = ParamSpec('P'), ParamSpec('P')
@@ -39,3 +40,9 @@ pair:Pair = lambda a: lambda b: lambda h: h(a)(b)
 first :Callable[[Pair],T] = lambda p: p(true)
 
 second:Callable[[Pair],T] = lambda p: p(false)
+
+identify:F = lambda u: u
+
+value = lambda v: (lambda h: h(v))
+
+extract:Callable[[F], T] = lambda k: k(identify) if k.__name__ != 'recursor_decorator' else signature(k).parameters["__recursion"].default
