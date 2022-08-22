@@ -1,23 +1,26 @@
 from typing import Callable, TypeVar
 
 T = TypeVar('T')
+F = Callable[[T], T]
+Functor = Callable[[F], F]
+Recusive = Callable[[F, int], F]
 
 # https://en.wikipedia.org/wiki/Church_encoding#Table_of_functions_on_Church_numerals
 
-succ:Callable[[Callable], Callable[[Callable[[T], T]], Callable[[T], T]]] \
+succ:Callable[[Recusive], Callable[[F], T]] \
     = lambda n: lambda f: lambda x: f(n(f)(x))
 
-plus:Callable[[Callable], Callable[[Callable], Callable[[Callable[[T], T]], Callable[[T], T]]]] \
-    = lambda m: lambda n: lambda f: lambda x: m(f)(n(f)(x))
+plus:Callable[[Recusive], Callable[[Recusive], Callable[[F], Callable[[T], T]]]] \
+    = lambda m: lambda n: lambda f: lambda x: m(f)(n(f)(x)) # m(succ)(n)
 
-mult:Callable[[Callable], Callable[[Callable], Callable[[Callable[[T], T]], T]]] \
+mult:Callable[[Recusive], Callable[[Recusive], Functor]] \
     = lambda m: lambda n: lambda f: m(n(f))
 
-exp:Callable[[Callable], Callable[[Callable]]] \
+exp:Callable[[Recusive], Callable[[Recusive], Functor]] \
     = lambda m: lambda n: n(m)
 
-pred:Callable[[Callable], Callable[[Callable[[T], T]], Callable[[T], T]]] \
+pred:Callable[[Recusive], Callable[[F], Callable[[T], T]]] \
     = lambda n: lambda f: lambda x: n(lambda g: lambda h: h(g(f)))(lambda u: x)(lambda u: u)
 
-minus:Callable[[Callable], Callable[[Callable]]]\
+minus:Callable[[Recusive], Callable[[Recusive], Functor]]\
      = lambda m: lambda n: n(pred)(m)
