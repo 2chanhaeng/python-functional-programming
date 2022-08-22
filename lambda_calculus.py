@@ -1,5 +1,6 @@
 from typing import Callable, TypeVar
 
+__all__ = ["succ", "plus", "mult", "exp", "pred", "minus"]
 T = TypeVar('T')
 F = Callable[[T], T]
 Functor = Callable[[F], F]
