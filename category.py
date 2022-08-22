@@ -1,6 +1,6 @@
 from lambda_calculus import *
 from recursive import recursive
-from typing import Callable, TypeVar, ParamSpec, Any
+from typing import Callable, TypeVar, ParamSpec
 P, Q = ParamSpec('P'), ParamSpec('P')
 T = TypeVar('T')
 F = Callable[[T],T]
@@ -24,3 +24,12 @@ class Category:
         self.plus:Callable[[Recusive], Callable[[Recusive], T]] \
             = lambda m: lambda n: recursive(m)(self.inc)(recursive(n)(self.inc)(self.init))
         self.curr_succ:Callable[[Pair], Pair] = lambda p: pair(second(p))(self.inc(second(p)))
+
+
+def test_category(c:Category, name:str) -> None:
+    print("Category:", name)
+    print("init:", extract(c.init))
+    print("inc inc:", extract(c.inc(c.inc(c.init))))
+    print("succ(2):", extract(c.succ(2)))
+    print("plus(2)(3):", extract(c.plus(2)(3)))
+    print()
